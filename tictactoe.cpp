@@ -1,66 +1,27 @@
 #include <iostream>
 using namespace std;
 
-void drawboard (char[]);
-void mark (char[] , int , int);
-int check (char[]);
-
-main ()
+class Board
 {
-	char board[9] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
-	int pl = 1 , pos;	
-	int res;	
-	
-	do 			//Loop until a player wins
-	{
-		system ("cls");
-		//Display board
-		cout << "\t ** TIC-TAC-TOE **" << endl;
-		cout << "--------------------------------------"<< endl << endl;
-		drawboard (board);
-		cout << endl << endl;
+	//Declaring class variables
+	char b[9];
 		
-		//Enter user's choice
-		do
-		{
-			cout << "Player " << pl << " : ";
-			cin >> pos;
-			if (pos < 1 || pos > 9)
-				cout << "INVALID CHOICE!! ENTER AGAIN!!" << endl;
-				
-		}while (pos < 1 || pos > 9);		
-		
-		//change value in board if not already marked and also change player for next turn
-		if (board[pos-1] == pos+48)
-		{
-			mark(board , pl , pos-1);
-			pl = (pl%2) + 1;
-		}
-		else
-			cout << "INVALID CHOICE!! ENTER AGAIN!!" << endl;
-		
-		res = check (board);
-	}while (res == 0);		//until no player wins
-	 
-	system ("cls");
-		//Display board
-	cout << "\t ** TIC-TAC-TOE **" << endl;
-	cout << "--------------------------------------"<< endl << endl;
-	drawboard (board);
-	cout << endl << endl;
-	
-	 //player who played last was the winner. so change it to last player
-	 pl = (pl%2) + 1;
-	 
-	//in case of draw
-	if (res == -1)
-		cout << "MATCH DRAW!!";
-	else
-		cout << "PLAYER " << pl << " WINS!!";
-	return 0;
+	//Member functions
+	public :
+		Board ();
+		void drawboard ();
+		void mark (int , int);
+		int check ();
+		int isempty (int);
+};
+
+Board :: Board()
+{
+	for (int i=0 ; i<9 ; i++)
+		b[i] = i+49;
 }
 
-void drawboard(char b[])
+void Board :: drawboard()
 {
 	cout << "\t     |     |     " << endl;
 	cout << "\t  " << b[0] << "  |  " << b[1] << "  |  " << b[2] << "  " << endl;
@@ -73,7 +34,7 @@ void drawboard(char b[])
 	cout << "\t     |     |     " << endl;
 }
 
-void mark (char b[] , int p , int i)	//Put players mark on index i
+void Board :: mark (int p , int i)	//Put players mark on index i
 {
 	char mark;
 	if (p == 1)
@@ -83,7 +44,7 @@ void mark (char b[] , int p , int i)	//Put players mark on index i
 	b[i] = mark;
 }
 
-int check (char b[])
+int Board :: check ()
 {
 	int f=0;	//to check draw
 		
@@ -117,4 +78,66 @@ int check (char b[])
 	
 	//Board incomplete
 	return 0;	
+}
+
+int Board :: isempty (int p)
+{
+	if (b[p] == p+49)
+		return 1;
+	return 0;
+}
+
+main ()
+{
+	Board b;
+	int pl = 1 , pos;	
+	int res;	
+	
+	do 			//Loop until a player wins
+	{
+		system ("cls");
+		//Display board
+		cout << "\t ** TIC-TAC-TOE **" << endl;
+		cout << "--------------------------------------"<< endl << endl;
+		b.drawboard ();
+		cout << endl << endl;
+		
+		//Enter user's choice
+		do
+		{
+			cout << "Player " << pl << " : ";
+			cin >> pos;
+			if (pos < 1 || pos > 9)
+				cout << "INVALID CHOICE!! ENTER AGAIN!!" << endl;
+				
+		}while (pos < 1 || pos > 9);		
+		
+		//change value in board if not already marked and also change player for next turn
+		if (b.isempty(pos-1))
+		{
+			b.mark( pl , pos-1);
+			pl = (pl%2) + 1;
+		}
+		else
+			cout << "INVALID CHOICE!! ENTER AGAIN!!" << endl;
+		
+		res = b.check();
+	}while (res == 0);		//until no player wins
+	 
+	system ("cls");
+		//Display board
+	cout << "\t ** TIC-TAC-TOE **" << endl;
+	cout << "--------------------------------------"<< endl << endl;
+	b.drawboard ();;
+	cout << endl << endl;
+	
+	 //player who played last was the winner. so change it to last player
+	 pl = (pl%2) + 1;
+	 
+	//in case of draw
+	if (res == -1)
+		cout << "MATCH DRAW!!";
+	else
+		cout << "PLAYER " << pl << " WINS!!";
+	return 0;
 }
